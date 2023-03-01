@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Button from '../Button'
+import Toast from '../Toast/Toast'
 
 import styles from './ToastPlayground.module.css'
 
@@ -13,8 +14,11 @@ function ToastPlayground() {
 	// })
 	const [toastMessage, setToastMessage] = React.useState('')
 	const [toastVariant, setToastVariant] = React.useState(VARIANT_OPTIONS[0])
+	const [isRendered, setIsRendered] = React.useState(false)
 
-	console.log({ toastMessage, toastVariant })
+	function handleDismiss() {
+		setIsRendered(false)
+	}
 
 	return (
 		<div className={styles.wrapper}>
@@ -22,6 +26,16 @@ function ToastPlayground() {
 				<img alt='Cute toast mascot' src='/toast.png' />
 				<h1>Toast Playground</h1>
 			</header>
+
+			{isRendered && (
+				<Toast
+					variant={toastVariant}
+					message={toastMessage}
+					handleDismiss={handleDismiss}
+				>
+					{toastMessage}
+				</Toast>
+			)}
 
 			<div className={styles.controlsWrapper}>
 				<div className={styles.row}>
@@ -45,19 +59,19 @@ function ToastPlayground() {
 				<div className={styles.row}>
 					<div className={styles.label}>Variant</div>
 					<div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-						{VARIANT_OPTIONS.map((option, index) => (
-							<label key={index} htmlFor='variant-notice'>
+						{VARIANT_OPTIONS.map((variant, index) => (
+							<label key={index} htmlFor={`variant-${variant}`}>
 								<input
-									id='variant-notice'
+									id={`variant-${variant}`}
 									type='radio'
 									name='variant'
-									value={option}
-									checked={toastVariant === option}
+									value={variant}
+									checked={toastVariant === variant}
 									onChange={(event) => {
 										setToastVariant(event.target.value)
 									}}
 								/>
-								{option}
+								{variant}
 							</label>
 						))}
 					</div>
@@ -66,7 +80,7 @@ function ToastPlayground() {
 				<div className={styles.row}>
 					<div className={styles.label} />
 					<div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-						<Button>Pop Toast!</Button>
+						<Button onClick={() => setIsRendered(true)}>Pop Toast!</Button>
 					</div>
 				</div>
 			</div>
